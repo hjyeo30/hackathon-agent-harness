@@ -1,0 +1,7 @@
+P2
+# 5 columns by 3 rows, diagonal pair plus right-edge pair
+5 3
+255
+0 255 0 0 255
+255 0 0 0 255
+0 0 0 0 0

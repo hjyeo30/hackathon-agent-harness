@@ -1,0 +1,24 @@
+{
+  "schema_version": 1,
+  "checks": [
+    {
+      "id": "large-data",
+      "requirement": "R07",
+      "kind": "unit-integration-regression",
+      "argv": [
+        "python3",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "tests",
+        "-v"
+      ],
+      "cwd": ".",
+      "timeout_seconds": 30,
+      "required": true,
+      "reason": "분할 평균의 가중치 오류·다중 순회·무제한 cardinality·로그 폭증",
+      "oracle": "A 평균3/B 평균40; 모든 chunk 분할에서 동일 집계, 행수 보존, 명시한 메모리 계약"
+    }
+  ]
+}

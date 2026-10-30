@@ -1,0 +1,24 @@
+{
+  "schema_version": 1,
+  "checks": [
+    {
+      "id": "timeseries-anomalies",
+      "requirement": "R07",
+      "kind": "unit-integration-regression",
+      "argv": [
+        "python3",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "tests",
+        "-v"
+      ],
+      "cwd": ".",
+      "timeout_seconds": 30,
+      "required": true,
+      "reason": "누락의 잘못된 대치·시간 순서·임계값과 연속성 오류",
+      "oracle": "합성 시간표에서 수작업 지정한 event t4,t5,t6,t9,t10 및 정상구간"
+    }
+  ]
+}

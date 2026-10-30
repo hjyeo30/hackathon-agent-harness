@@ -1,0 +1,27 @@
+{
+  "schema_version": 1,
+  "checks": [
+    {
+      "id": "export-regression",
+      "requirement": "R05",
+      "kind": "regression",
+      "argv": [
+        "python3",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "tests",
+        "-v"
+      ],
+      "cwd": ".",
+      "timeout_seconds": 30,
+      "required": true,
+      "profile": "core",
+      "reason": "마지막 행과 줄바꿈 없는 파일이 누락되던 결함을 재현하고 회귀 방지한다.",
+      "oracle": "손으로 지정한 마지막 item=last, CLI 출력 CSV와 stderr count=1",
+      "test_framework": "unittest",
+      "min_tests": 1
+    }
+  ]
+}

@@ -1,0 +1,45 @@
+{
+  "schema_version": 1,
+  "checks": [
+    {
+      "id": "web-api",
+      "requirement": "R08",
+      "kind": "integration",
+      "argv": [
+        "python3",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "tests",
+        "-v"
+      ],
+      "cwd": ".",
+      "timeout_seconds": 30,
+      "required": true,
+      "profile": "core",
+      "reason": "CSV 업로드·필터·집계·다운로드 실제 HTTP와 잘못된 입력을 확인한다.",
+      "oracle": "손계산 10/100=0.1, 지정 기간의 배치 A만 포함, parse span FAIL",
+      "test_framework": "unittest",
+      "min_tests": 1
+    },
+    {
+      "id": "web-browser",
+      "requirement": "R08",
+      "kind": "e2e",
+      "argv": [
+        "node",
+        "node_modules/@playwright/test/cli.js",
+        "test"
+      ],
+      "cwd": ".",
+      "timeout_seconds": 120,
+      "required": true,
+      "profile": "browser",
+      "reason": "실제 UI 업로드·필터·다운로드, 오류 상태와 늦은 응답 회귀를 검사한다.",
+      "oracle": "손계산 10%, 날짜 필터 90%, 다운로드에 A만, 늦은 이전 응답이 새 결과를 덮지 않음",
+      "test_framework": "playwright",
+      "min_tests": 1
+    }
+  ]
+}

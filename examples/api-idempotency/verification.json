@@ -1,0 +1,27 @@
+{
+  "schema_version": 1,
+  "checks": [
+    {
+      "id": "idempotency",
+      "requirement": "R07",
+      "kind": "integration",
+      "argv": [
+        "python3",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "tests",
+        "-v"
+      ],
+      "cwd": ".",
+      "timeout_seconds": 30,
+      "required": true,
+      "profile": "core",
+      "reason": "재시도·같은 키 다른 요청·트랜잭션 중단·동시 요청의 중복 상태를 잡는다.",
+      "oracle": "독립 SQL count: 요청과 작업 각 1개; commit 전 실패는 각 0개",
+      "test_framework": "unittest",
+      "min_tests": 1
+    }
+  ]
+}

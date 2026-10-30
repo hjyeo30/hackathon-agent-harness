@@ -1,0 +1,24 @@
+{
+  "schema_version": 1,
+  "checks": [
+    {
+      "id": "data-weighted-yield",
+      "requirement": "R07",
+      "kind": "unit-integration-regression",
+      "argv": [
+        "python3",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "tests",
+        "-v"
+      ],
+      "cwd": ".",
+      "timeout_seconds": 30,
+      "required": true,
+      "reason": "크기가 다른 배치의 단순 평균, 잘못된 입력·중복으로 인한 수율 오류",
+      "oracle": "9+1=10, 10+90=100으로 전체 수율 1/10; 명시한 입력 계약"
+    }
+  ]
+}

@@ -1,0 +1,6 @@
+# Optional parent Codex configuration fragment. Do not overwrite existing config.
+# Documentation-checked 2026-10-31; browser launch is a separate acceptance check.
+[mcp_servers.hackathon_playwright]
+command = "npx"
+args = ["--yes", "@playwright/mcp@0.0.83", "--headless", "--isolated"]
+startup_timeout_sec = 30

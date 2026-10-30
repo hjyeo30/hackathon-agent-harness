@@ -1,0 +1,24 @@
+{
+  "schema_version": 1,
+  "checks": [
+    {
+      "id": "sql-join-duplication",
+      "requirement": "R07",
+      "kind": "unit-integration-regression",
+      "argv": [
+        "python3",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "tests",
+        "-v"
+      ],
+      "cwd": ".",
+      "timeout_seconds": 30,
+      "required": true,
+      "reason": "SQL이 성공해도 중복 차원 JOIN과 orphan으로 합계가 왜곡되는 실패",
+      "oracle": "3개 원자료의 합계150, M1=100/M2=50; 차원 키는 유일"
+    }
+  ]
+}

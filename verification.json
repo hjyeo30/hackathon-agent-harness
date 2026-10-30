@@ -1,0 +1,273 @@
+{
+  "schema_version": 1,
+  "checks": [
+    {
+      "id": "harness-core",
+      "requirement": "R01,R04,R06,R13",
+      "kind": "integration",
+      "argv": [
+        "python3",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "tests",
+        "-v"
+      ],
+      "cwd": ".",
+      "timeout_seconds": 120,
+      "required": true,
+      "profile": "core",
+      "test_framework": "unittest",
+      "min_tests": 1,
+      "reason": "Verify real runner failures, blocked and zero-test states, evidence freshness and non-destructive bootstrap.",
+      "oracle": "Independent temporary processes and files must produce the documented statuses and preservation outcomes."
+    },
+    {
+      "id": "idempotency",
+      "requirement": "R07",
+      "kind": "integration",
+      "argv": [
+        "python3",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "tests",
+        "-v"
+      ],
+      "cwd": "examples/api-idempotency",
+      "timeout_seconds": 30,
+      "required": true,
+      "profile": "core",
+      "reason": "재시도·같은 키 다른 요청·트랜잭션 중단·동시 요청의 중복 상태를 잡는다.",
+      "oracle": "독립 SQL count: 요청과 작업 각 1개; commit 전 실패는 각 0개",
+      "test_framework": "unittest",
+      "min_tests": 1
+    },
+    {
+      "id": "data-weighted-yield",
+      "requirement": "R07",
+      "kind": "unit-integration-regression",
+      "argv": [
+        "python3",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "tests",
+        "-v"
+      ],
+      "cwd": "examples/data-weighted-yield",
+      "timeout_seconds": 30,
+      "required": true,
+      "reason": "크기가 다른 배치의 단순 평균, 잘못된 입력·중복으로 인한 수율 오류",
+      "oracle": "9+1=10, 10+90=100으로 전체 수율 1/10; 명시한 입력 계약",
+      "profile": "core"
+    },
+    {
+      "id": "export-regression",
+      "requirement": "R05",
+      "kind": "regression",
+      "argv": [
+        "python3",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "tests",
+        "-v"
+      ],
+      "cwd": "examples/existing-project-debugging",
+      "timeout_seconds": 30,
+      "required": true,
+      "profile": "core",
+      "reason": "마지막 행과 줄바꿈 없는 파일이 누락되던 결함을 재현하고 회귀 방지한다.",
+      "oracle": "손으로 지정한 마지막 item=last, CLI 출력 CSV와 stderr count=1",
+      "test_framework": "unittest",
+      "min_tests": 1
+    },
+    {
+      "id": "image-components",
+      "requirement": "R07",
+      "kind": "unit-integration-regression",
+      "argv": [
+        "python3",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "tests",
+        "-v"
+      ],
+      "cwd": "examples/image-components",
+      "timeout_seconds": 30,
+      "required": true,
+      "reason": "축 혼동·연결 정의·임계값·가장자리 누락을 실제 bitmap으로 검증",
+      "oracle": "5x3 hand-drawn PGM: 4연결 3영역, 8연결 2영역, 밝은 픽셀4개",
+      "profile": "core"
+    },
+    {
+      "id": "large-data",
+      "requirement": "R07",
+      "kind": "unit-integration-regression",
+      "argv": [
+        "python3",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "tests",
+        "-v"
+      ],
+      "cwd": "examples/large-data",
+      "timeout_seconds": 30,
+      "required": true,
+      "reason": "분할 평균의 가중치 오류·다중 순회·무제한 cardinality·로그 폭증",
+      "oracle": "A 평균3/B 평균40; 모든 chunk 분할에서 동일 집계, 행수 보존, 명시한 메모리 계약",
+      "profile": "core"
+    },
+    {
+      "id": "ml-leakage",
+      "requirement": "R07",
+      "kind": "unit-integration-regression",
+      "argv": [
+        "python3",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "tests",
+        "-v"
+      ],
+      "cwd": "examples/ml-leakage",
+      "timeout_seconds": 30,
+      "required": true,
+      "reason": "평가 데이터가 학습 전처리에 섞이고 accuracy가 소수 클래스 미탐을 숨기는 실패",
+      "oracle": "훈련 평균5, 중심7/3와9; 9음성/1양성 모두음성 예측은 recall0",
+      "profile": "core"
+    },
+    {
+      "id": "grounding",
+      "requirement": "R07",
+      "kind": "unit",
+      "argv": [
+        "python3",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "tests",
+        "-v"
+      ],
+      "cwd": "examples/rag-grounding",
+      "timeout_seconds": 30,
+      "required": true,
+      "profile": "core",
+      "reason": "없는 문서·오래된 인용·만든 답·모호한 검색을 구분한다.",
+      "oracle": "최신 fixture 문서의 정확한 quote 또는 명시적 abstain",
+      "test_framework": "unittest",
+      "min_tests": 1
+    },
+    {
+      "id": "scheduling-constraints",
+      "requirement": "R07",
+      "kind": "unit-integration-regression",
+      "argv": [
+        "python3",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "tests",
+        "-v"
+      ],
+      "cwd": "examples/scheduling-constraints",
+      "timeout_seconds": 30,
+      "required": true,
+      "reason": "좋은 목적값 뒤의 설비 중복·선행·정비·납기 위반",
+      "oracle": "J2 3시간+J3 1시간으로 makespan 하한4; 독립 제약 checker",
+      "profile": "core"
+    },
+    {
+      "id": "sql-join-duplication",
+      "requirement": "R07",
+      "kind": "unit-integration-regression",
+      "argv": [
+        "python3",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "tests",
+        "-v"
+      ],
+      "cwd": "examples/sql-join-duplication",
+      "timeout_seconds": 30,
+      "required": true,
+      "reason": "SQL이 성공해도 중복 차원 JOIN과 orphan으로 합계가 왜곡되는 실패",
+      "oracle": "3개 원자료의 합계150, M1=100/M2=50; 차원 키는 유일",
+      "profile": "core"
+    },
+    {
+      "id": "timeseries-anomalies",
+      "requirement": "R07",
+      "kind": "unit-integration-regression",
+      "argv": [
+        "python3",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "tests",
+        "-v"
+      ],
+      "cwd": "examples/timeseries-anomalies",
+      "timeout_seconds": 30,
+      "required": true,
+      "reason": "누락의 잘못된 대치·시간 순서·임계값과 연속성 오류",
+      "oracle": "합성 시간표에서 수작업 지정한 event t4,t5,t6,t9,t10 및 정상구간",
+      "profile": "core"
+    },
+    {
+      "id": "web-api",
+      "requirement": "R08",
+      "kind": "integration",
+      "argv": [
+        "python3",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "tests",
+        "-v"
+      ],
+      "cwd": "examples/web-filter-export",
+      "timeout_seconds": 30,
+      "required": true,
+      "profile": "core",
+      "reason": "CSV 업로드·필터·집계·다운로드 실제 HTTP와 잘못된 입력을 확인한다.",
+      "oracle": "손계산 10/100=0.1, 지정 기간의 배치 A만 포함, parse span FAIL",
+      "test_framework": "unittest",
+      "min_tests": 1
+    },
+    {
+      "id": "web-browser",
+      "requirement": "R08",
+      "kind": "e2e",
+      "argv": [
+        "node",
+        "node_modules/@playwright/test/cli.js",
+        "test"
+      ],
+      "cwd": "examples/web-filter-export",
+      "timeout_seconds": 120,
+      "required": true,
+      "profile": "browser",
+      "reason": "실제 UI 업로드·필터·다운로드, 오류 상태와 늦은 응답 회귀를 검사한다.",
+      "oracle": "손계산 10%, 날짜 필터 90%, 다운로드에 A만, 늦은 이전 응답이 새 결과를 덮지 않음",
+      "test_framework": "playwright",
+      "min_tests": 1
+    }
+  ]
+}

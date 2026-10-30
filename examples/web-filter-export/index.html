@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="ko"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>설비 수율 검증 실습</title>
+<style>
+body{font-family:system-ui,sans-serif;margin:0;background:#f4f6f8;color:#162533}main{max-width:920px;margin:40px auto;padding:24px}h1{font-size:30px}p{line-height:1.6}.panel{background:white;padding:24px;border:1px solid #dce3e9;border-radius:12px;margin:20px 0}.filters{display:flex;flex-wrap:wrap;gap:18px;align-items:end}label{display:flex;flex-direction:column;gap:7px}input,select,button{font:inherit;padding:10px;border:1px solid #a7b7c4;border-radius:6px}button{background:#145c63;color:white;cursor:pointer}button:disabled{opacity:.5;cursor:wait}[role=alert]{color:#a12626}strong[data-testid]{font-size:36px}table{width:100%;border-collapse:collapse;margin-top:16px}th,td{text-align:left;padding:10px;border-bottom:1px solid #dde4e9}.muted{color:#536577;font-size:14px}code{word-break:break-all}
+</style>
+<main>
+<p class="muted">합성 데이터 · 로컬 실행 예제</p><h1>설비 수율 분석</h1>
+<p>CSV의 양품 수와 검사 수를 합산합니다. 전체 수율은 <b>양품 합계 ÷ 검사 합계</b>입니다.</p>
+<form id="form" class="panel">
+<label>CSV 파일<input id="file" type="file" accept=".csv,text/csv" required></label>
+<p class="muted">열 순서: batch,equipment,date,good,total · 최대 요청 1 MiB</p>
+<div class="filters"><label>설비<select id="equipment" aria-label="설비"><option value="">전체 설비</option></select></label>
+<label>시작일<input id="start" type="date"></label><label>종료일<input id="end" type="date"></label>
+<button type="submit">분석</button><button id="download" type="button" disabled>CSV 다운로드</button></div>
+</form>
+<p role="status" id="status">CSV 파일을 선택하고 분석하세요.</p><p role="alert" id="error"></p>
+<section class="panel" aria-label="분석 결과"><p>전체 수율</p><strong data-testid="yield-rate">—</strong>
+<p id="summary">아직 분석하지 않았습니다.</p><p class="muted" id="trace"></p>
+<table><thead><tr><th>배치</th><th>설비</th><th>날짜</th><th>양품</th><th>검사</th></tr></thead><tbody id="rows"></tbody></table>
+</section></main>
+<script>
+const $=id=>document.getElementById(id);
+let sequence=0, controller, accepted=null;
+const filters=()=>({equipment:$('equipment').value,start:$('start').value,end:$('end').value});
+function clearResult(){accepted=null;$('download').disabled=true;document.querySelector('[data-testid="yield-rate"]').textContent='—';$('summary').textContent='';$('rows').replaceChildren();$('trace').textContent='';}
+// Each submission owns its result. An older response cannot replace a later selection.
+$('form').addEventListener('submit',async event=>{
+ event.preventDefault();const current=++sequence;if(controller)controller.abort();controller=new AbortController();
+ const signal=controller.signal;clearResult();$('error').textContent='';$('status').textContent='분석 중…';
+ try{
+  const file=$('file').files[0];if(!file)throw Error('CSV 파일을 선택하세요.');
+  const payload={csv:await file.text(),filters:filters()};if(current!==sequence)return;
+  const response=await fetch('/api/analyze',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload),signal});
+  const result=await response.json();if(current!==sequence)return;
+  if(!response.ok)throw Error(result.message||'분석 요청이 실패했습니다.');
+  const chosen=payload.filters.equipment;$('equipment').replaceChildren(new Option('전체 설비',''),...result.equipment.map(x=>new Option(x,x)));$('equipment').value=chosen;
+  document.querySelector('[data-testid="yield-rate"]').textContent=result.yield_rate===null?'데이터 없음':(result.yield_rate*100).toFixed(2)+'%';
+  $('summary').textContent=`${result.count}개 배치 · 양품 ${result.good} / 검사 ${result.total}`;
+  $('trace').textContent='확인 ID: '+result.trace_id;
+  $('rows').replaceChildren(...result.rows.map(row=>{const tr=document.createElement('tr');for(const key of ['batch','equipment','date','good','total']){const td=document.createElement('td');td.textContent=row[key];tr.append(td);}return tr;}));
+  accepted=payload;$('download').disabled=false;$('status').textContent='분석 완료';
+ }catch(error){if(current!==sequence||error.name==='AbortError')return;$('error').textContent=error.message;$('status').textContent='분석 실패';}
+});
+// Changing a selection invalidates the previous download until the next analysis.
+for(const id of ['file','equipment','start','end'])$(id).addEventListener('change',()=>{sequence++;if(controller)controller.abort();if(id==='file')$('equipment').replaceChildren(new Option('전체 설비',''));clearResult();$('status').textContent='입력이 바뀌었습니다. 분석을 실행하세요.';});
+$('download').addEventListener('click',async()=>{
+ if(!accepted)return;const current=sequence;const payload=accepted;$('error').textContent='';
+ try{const response=await fetch('/api/export',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});if(!response.ok){const err=await response.json();throw Error(err.message||'다운로드 실패');}const blob=await response.blob();if(current!==sequence)return;const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download='filtered-yield.csv';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);}catch(error){if(current===sequence)$('error').textContent=error.message;}
+});
+</script></html>

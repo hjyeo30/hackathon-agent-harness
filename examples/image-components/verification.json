@@ -1,0 +1,24 @@
+{
+  "schema_version": 1,
+  "checks": [
+    {
+      "id": "image-components",
+      "requirement": "R07",
+      "kind": "unit-integration-regression",
+      "argv": [
+        "python3",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "tests",
+        "-v"
+      ],
+      "cwd": ".",
+      "timeout_seconds": 30,
+      "required": true,
+      "reason": "축 혼동·연결 정의·임계값·가장자리 누락을 실제 bitmap으로 검증",
+      "oracle": "5x3 hand-drawn PGM: 4연결 3영역, 8연결 2영역, 밝은 픽셀4개"
+    }
+  ]
+}

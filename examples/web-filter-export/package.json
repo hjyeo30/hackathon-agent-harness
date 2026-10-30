@@ -1,0 +1,9 @@
+{
+  "name": "harness-web-filter-export-example",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Local synthetic CSV app browser verification",
+  "engines": {"node": ">=20"},
+  "scripts": {"test": "playwright test"},
+  "devDependencies": {"@playwright/test": "1.64.1"}
+}

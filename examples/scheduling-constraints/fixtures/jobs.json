@@ -1,0 +1,1 @@
+{"jobs": [{"id":"J1","duration":2,"machines":["A"],"after":[]},{"id":"J2","duration":3,"machines":["A","B"],"after":[]},{"id":"J3","duration":1,"machines":["A"],"after":["J1","J2"]}],"maintenance":{"A":[[2,3]]}}

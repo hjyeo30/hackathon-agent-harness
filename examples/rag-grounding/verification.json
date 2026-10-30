@@ -1,0 +1,27 @@
+{
+  "schema_version": 1,
+  "checks": [
+    {
+      "id": "grounding",
+      "requirement": "R07",
+      "kind": "unit",
+      "argv": [
+        "python3",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "tests",
+        "-v"
+      ],
+      "cwd": ".",
+      "timeout_seconds": 30,
+      "required": true,
+      "profile": "core",
+      "reason": "없는 문서·오래된 인용·만든 답·모호한 검색을 구분한다.",
+      "oracle": "최신 fixture 문서의 정확한 quote 또는 명시적 abstain",
+      "test_framework": "unittest",
+      "min_tests": 1
+    }
+  ]
+}

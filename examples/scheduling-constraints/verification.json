@@ -1,0 +1,24 @@
+{
+  "schema_version": 1,
+  "checks": [
+    {
+      "id": "scheduling-constraints",
+      "requirement": "R07",
+      "kind": "unit-integration-regression",
+      "argv": [
+        "python3",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "tests",
+        "-v"
+      ],
+      "cwd": ".",
+      "timeout_seconds": 30,
+      "required": true,
+      "reason": "좋은 목적값 뒤의 설비 중복·선행·정비·납기 위반",
+      "oracle": "J2 3시간+J3 1시간으로 makespan 하한4; 독립 제약 checker"
+    }
+  ]
+}

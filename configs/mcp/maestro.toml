@@ -1,0 +1,6 @@
+# Optional. Requires installed Maestro CLI and an executable target device/app.
+# Do not enable merely because MCP itself is available.
+[mcp_servers.hackathon_maestro]
+command = "maestro"
+args = ["mcp"]
+startup_timeout_sec = 30

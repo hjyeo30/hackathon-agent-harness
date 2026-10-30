@@ -1,0 +1,5 @@
+[
+  {"id":"pump-pressure","version":1,"tags":["pump","pressure","inspection","펌프","압력"],"text":"합성 SOP v1: 압력 이상 시 담당자에게 점검을 요청합니다."},
+  {"id":"pump-pressure","version":2,"tags":["pump","pressure","inspection","펌프","압력"],"text":"합성 SOP v2: 압력 센서 기록과 측정 시각을 확인하여 담당자에게 전달합니다."},
+  {"id":"motor-temperature","version":1,"tags":["motor","temperature","inspection","모터","온도"],"text":"합성 SOP: 온도 센서의 누락 구간을 기록하여 담당자에게 전달합니다."}
+]
